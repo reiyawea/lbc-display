@@ -3,9 +3,9 @@ key_list = {'KEY_1','KEY_2', 'KEY_3'}
 server_ip = '192.168.1.233'
 server_port = 54742
 LED_pin = 8
-key1='0123456789ABCDEF' -- pre-shared key
-key2=''
-last_data={0,0,0,0,0}
+key1 = '0123456789ABCDEF' -- pre-shared key
+key2 = ''
+last_data = {0, 0, 0, 0, 0}
 function time_of_epoch(epoch)
     local t, ts
     t = rtctime.epoch2cal(epoch)
