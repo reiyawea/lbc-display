@@ -42,18 +42,19 @@ def getPrice(url, returnIndex):
     for x in ad_list:
         tp = float(x['data']['temp_price'])
         un = x['data']['profile']['username']
-        price_list.append((tp, un))
+        url = x['actions']['public_view']
+        price_list.append((tp, un, url))
     price_list.sort()
-    return price_list[returnIndex]
+    return price_list[returnIndex][0:2], price_list[returnIndex][2]
 
 def pollRecord(fname):
     global price
-    a=getPrice('https://localbitcoins.com/buy-bitcoins-online/CNY/alipay/.json', 0)
-    b=getPrice('https://localbitcoins.com/sell-bitcoins-online/CNY/alipay/.json', -1)
+    a, u = getPrice('https://localbitcoins.com/buy-bitcoins-online/CNY/alipay/.json', 0)
+    b, u = getPrice('https://localbitcoins.com/sell-bitcoins-online/CNY/alipay/.json', -1)
     price.update(a[0], b[0])
     with open(fname, 'a') as f:
         f.write('%s,' % time.strftime("%Y-%m-%d %H:%M:%S"))
-        f.write('%.2f,%s,%.2f,%s\r\n' % (a + b))
+        f.write('%.2f,%s,%.2f,%s,%s\r\n' % (a + b + (u, )))
 
 def polling():
     while True:
@@ -78,7 +79,7 @@ def daemon():
             if len(key2) != 16:
                 raise LengthError('Request length not 16')
         except (socket.timeout, LengthError, ConnectionResetError) as e:
-            recErrLog('%s:%d, %s' % addr + (e, ))
+            recErrLog('%s:%d, %s' % (addr + (e, )))
         except Exception as e:
             recErrLog(e)
         else:
